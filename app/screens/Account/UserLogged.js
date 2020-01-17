@@ -4,7 +4,10 @@ import {Button} from 'react-native-elements';
 import * as firebase from 'firebase';
 import InfoUser from '../../components/Account/InfoUser'
 import AccountOptions from '../../components/Account/AccountOptions'
-export default function UserLogged(props){
+import {withNavigation, NavigationEvents} from 'react-navigation';
+
+ function UserLogged(props){
+    const{navigation} = props;
     const [userInfo, setUserInfo] = useState({});
 
     useEffect(() => {
@@ -18,7 +21,7 @@ export default function UserLogged(props){
     return(
         <View style={styles.viewUserInfo}>
             <InfoUser userInfo={userInfo}/>
-            <AccountOptions/>
+            <AccountOptions navigation={navigation}/>
             <Button 
             title='cerrar sesion'
              onPress={() => firebase.auth().signOut()}
@@ -27,6 +30,8 @@ export default function UserLogged(props){
         </View>
     )
 }
+
+export default withNavigation(UserLogged)
 
 const styles = StyleSheet.create({
     viewUserInfo: {

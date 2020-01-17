@@ -1,8 +1,14 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Alert} from 'react-native';
 import {ListItem} from 'react-native-elements';
+import {firebaseApp} from '../../Utils/FireBase'
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 
-export default function AccountOptions(){
+export default function AccountOptions(props){
+    
+    
+    const {navigation} = props;
     
     const menuOptions = [{
         title: 'cambiar Nombre y Apellidos',
@@ -30,6 +36,24 @@ export default function AccountOptions(){
         iconNameRight: 'chevron-right',
         iconColorRight: '#ccc',
         onPress: () => console.log('change contraseña')
+    },
+    {
+        title: 'Ver Id de usuario',
+        iconType: 'material-community',
+        iconNameLeft: 'account-card-details',
+        iconColorLeft: '#ccc',
+        iconNameRight: 'chevron-right',
+        iconColorRight: '#ccc',
+        onPress: () => Alert.alert('Id usuario',firebaseApp.auth().currentUser.uid)
+    },
+    {
+        title: 'Ver mis reportes',
+        iconType: 'material-community',
+        iconNameLeft: 'account-card-details',
+        iconColorLeft: '#ccc',
+        iconNameRight: 'chevron-right',
+        iconColorRight: '#ccc',
+        onPress: () => navigation.navigate('MisReportess')  
     }
 ];
     return(

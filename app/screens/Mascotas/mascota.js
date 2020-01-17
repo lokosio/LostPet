@@ -41,6 +41,8 @@ export default function Mascota(props){
                location={pet.location}
                name={pet.name}
                address={pet.address}
+               phone={pet.phone}
+               recompensa={pet.recompensa}
             />
 
 
@@ -67,7 +69,7 @@ function TitleMascota(props){
 }
 
 function MascotaInfo(props){
-    const {location, name , address} = props;
+    const {location, name , address, phone, recompensa } = props;
 
     const listInfo = [
         {
@@ -77,14 +79,14 @@ function MascotaInfo(props){
             action: null
         }, 
         {
-            text: '3504664166',
+            text: phone,
             iconName: 'phone',
             iconType: 'material-community',
             action: null
         },
         {
-            text: 'datepe399@gmail.com',
-            iconName: 'at',
+            text: recompensa,
+            iconName: 'currency-usd',
             iconType: 'material-community',
             action: null
         }

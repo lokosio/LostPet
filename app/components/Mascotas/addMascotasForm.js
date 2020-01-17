@@ -21,12 +21,14 @@ export default function addMascotasForm(props){
     const [mascotasName, setMascotasName]= useState('');
     const [mascotasAddress, setMascotasAdress] = useState('');
     const [mascotasDescription, setMascotastDescription] = useState('');
+    const [mascotasPhone, setMascotasPhone] = useState('');
+    const [mascotasRecompensa, setMascotaRecompensa] = useState('');
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [LocationMascotas,setLocationMascotas] = useState(null);
     
     
     const addMascotas = () => {
-        if (!mascotasName || !mascotasAddress || !mascotasDescription){
+        if (!mascotasName || !mascotasAddress || !mascotasDescription || !mascotasPhone || !mascotasRecompensa){
            ToastAndroid.show('todos los campos son obligatorias', ToastAndroid.SHORT);
         }else if(imagesSelected.length === 0){
            ToastAndroid.show('seleccione almenos una imagen', ToastAndroid.SHORT);
@@ -41,6 +43,8 @@ export default function addMascotasForm(props){
                     name: mascotasName,
                     address: mascotasAddress,
                     description: mascotasDescription,
+                    phone: mascotasPhone,
+                    recompensa: mascotasRecompensa,
                     location: LocationMascotas,
                     images: arrayImages,
                     createAt: new Date(),
@@ -84,6 +88,8 @@ export default function addMascotasForm(props){
            setMascotasName={setMascotasName}
            setMascotasAdress={setMascotasAdress}
            setMascotastDescription={setMascotastDescription}
+           setMascotasPhone={setMascotasPhone}
+           setMascotaRecompensa={setMascotaRecompensa}
            setIsVisibleMap={setIsVisibleMap}
            LocationMascotas={LocationMascotas}/>
            
@@ -202,6 +208,8 @@ function FormAdd(props){
         setMascotasName,
         setMascotastDescription,
         setMascotasAdress,
+        setMascotasPhone,
+        setMascotaRecompensa,
         setIsVisibleMap,
         LocationMascotas
     } = props
@@ -224,7 +232,16 @@ function FormAdd(props){
               }}
               onChange={e => setMascotasAdress(e.nativeEvent.text)}
            />
-
+           <Input
+              placeholder='Telefono de contacto'
+              containerStyle={styles.input}
+              onChange={e => setMascotasPhone(e.nativeEvent.text)}
+           />
+           <Input
+              placeholder='Recompensa'
+              containerStyle={styles.input}
+              onChange={e => setMascotaRecompensa(e.nativeEvent.text)}
+           />
            <Input
               placeholder='Descripcion de la mascota'
               multiline={true}

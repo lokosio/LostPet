@@ -36,6 +36,7 @@ import * as firebase from 'firebase';
       </View>
     )
 }
+
 export default withNavigation(funciones);
 const styles = StyleSheet.create({
     formContainer: {

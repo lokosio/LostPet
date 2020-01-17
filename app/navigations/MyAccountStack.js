@@ -2,6 +2,7 @@ import {createStackNavigator} from 'react-navigation-stack'
 import MyAccountScreen from '../screens/Account/MyAccount'
 import Login from '../../app/Login';
 import Register from '../../app/Registro'
+import MyReportes from '../screens/Account/MyReport'
 
  const MyAccountScreenStacks = createStackNavigator({
     MyAccount: {
@@ -9,6 +10,12 @@ import Register from '../../app/Registro'
         navigationOptions: () => ({
             title: 'Mi Cuenta'
         })
+    },
+    MisReportess : {
+      screen : MyReportes,
+      navigationOptions : {
+        title : 'mis reportes'
+      }
     },
     Login : {
         screen : Login,
@@ -22,6 +29,8 @@ import Register from '../../app/Registro'
           title : 'LostPet'
         }
       }
+      
+
 });
 
 export default MyAccountScreenStacks;
