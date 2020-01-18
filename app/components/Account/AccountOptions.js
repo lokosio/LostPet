@@ -49,7 +49,7 @@ export default function AccountOptions(props){
     {
         title: 'Ver mis reportes',
         iconType: 'material-community',
-        iconNameLeft: 'account-card-details',
+        iconNameLeft: 'paw',
         iconColorLeft: '#ccc',
         iconNameRight: 'chevron-right',
         iconColorRight: '#ccc',

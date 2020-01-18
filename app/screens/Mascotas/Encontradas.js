@@ -1,5 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {Text,View} from 'react-native';
+import {Text,View, StyleSheet} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionButton from 'react-native-action-button';
+import {withNavigation} from 'react-navigation';
 import { firebaseApp } from '../../Utils/FireBase';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -7,7 +10,7 @@ import Loading from '../../components/Loading'
 import ListMascotas from '../../components/Mascotas/ListMascotasEncontradas'
 const db = firebase.firestore(firebaseApp);
 
-export default function Mascotas(props){
+ function Mascotas(props){
 
    const {navigation} = props;
    const [user, setUser] = useState(null);
@@ -91,11 +94,45 @@ export default function Mascotas(props){
     };
     return (
 
-        <View>
+        <View style={styles.container}> 
           {user && <ListMascotas mascotas={mascotas} isLoading={isLoading} handleLoadMore={handleLoadMore} />}
+          {user && <AcctionButton navigation={navigation}/>}
           {!user && <Text>inicie sesion para ver el contenido</Text>}
         </View>
         
         
     )
 }
+export default withNavigation(Mascotas);
+
+function AcctionButton(props){
+    const {navigation} = props;
+    return (
+        <ActionButton buttonColor="rgba(231,76,60,1)">
+        <ActionButton.Item
+          buttonColor="#9b59b6"
+          title="Notificar Mascota Encontrada"
+          onPress={() => navigation.navigate("addMascotaEncontrada")}>
+          <Icon name="paw" style={styles.actionButtonIcon} />
+        </ActionButton.Item>
+        </ActionButton>
+        
+      );
+}
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      
+    },
+    welcome: {
+      fontSize: 20,
+      textAlign: 'center',
+      margin: 10,
+    },
+    actionButtonIcon: {
+      fontSize: 20,
+      height: 22,
+      color: 'white',
+    },
+  });

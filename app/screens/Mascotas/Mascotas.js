@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionButton from 'react-native-action-button';
 import { firebaseApp } from '../../Utils/FireBase';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -16,11 +18,7 @@ export default function Mascotas(props){
     const [startMascotas, setStartMascotas] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [totalMascotas, setTotalMascotas] = useState(0);
-    
     const limitMascotas = 8;
-    
-
-    
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged(userInfo => {
@@ -28,43 +26,30 @@ export default function Mascotas(props){
         });
 
     }, []);
-
     useEffect(() => {
         db.collection('mascotasPerdidas')
         .get()
         .then(snap => {
             setTotalMascotas(snap.size);
-            
-           });
-           
-           (async () => {
+            });
+        (async () => {
                const resultMascotas = [];
                const mascotas = db
                .collection('mascotasPerdidas')
                .orderBy('createAt', 'desc')
                .limit(limitMascotas)
-               
-
-                  
-               await mascotas.get().then(response => {
-                
-
-                   setStartMascotas(response.docs[response.docs.length - 1]);
-                   
-
-                   response.forEach(doc => {
-                   
-                       let pet = doc.data();
-                       pet.id = doc.id;
-                        resultMascotas.push({pet});
-                       
-                   });
-
+                await mascotas.get().then(response => {
+                 setStartMascotas(response.docs[response.docs.length - 1]);
+                       response.forEach(doc => {
+                            let pet = doc.data();
+                            pet.id = doc.id;
+                            if(pet.estado == true){
+                            resultMascotas.push({pet});
+                            }                  
+                    });
                    setMascotas(resultMascotas);
-                   
                })
            })();
-           
     }, []);
 
     const handleLoadMore = async () => {
@@ -94,17 +79,49 @@ export default function Mascotas(props){
     };
  
     return (
-        <View>
+        <View style={styles.container}>
             {user && <ListMascotas
            mascotas={mascotas}
            isLoading={isLoading}
            handleLoadMore={handleLoadMore}
-           navigation={navigation}/>}
+           navigation={navigation}/> 
+           }
+           {user && <AcctionButton navigation={navigation}/>}
            {!user && <Text>debe iniciar sesion</Text>}
-            
-         
-
+           
         </View>
         
     )
 }
+
+function AcctionButton(props){
+    const {navigation} = props;
+    return (
+        <ActionButton buttonColor="rgba(231,76,60,1)">
+        <ActionButton.Item
+          buttonColor="#9b59b6"
+          title="Reportar mi mascota perdida"
+          onPress={() => navigation.navigate("addMascotas")}>
+          <Icon name="paw" style={styles.actionButtonIcon} />
+        </ActionButton.Item>
+        </ActionButton>
+        
+      );
+}
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      
+    },
+    welcome: {
+      fontSize: 20,
+      textAlign: 'center',
+      margin: 10,
+    },
+    actionButtonIcon: {
+      fontSize: 20,
+      height: 22,
+      color: 'white',
+    },
+  });

@@ -23,6 +23,7 @@ export default function addMascotasForm(props){
     const [mascotasDescription, setMascotastDescription] = useState('');
     const [mascotasPhone, setMascotasPhone] = useState('');
     const [mascotasRecompensa, setMascotaRecompensa] = useState('');
+    const [mascotasEstado, setMascotasEstado] = useState(true);
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [LocationMascotas,setLocationMascotas] = useState(null);
     
@@ -45,6 +46,7 @@ export default function addMascotasForm(props){
                     description: mascotasDescription,
                     phone: mascotasPhone,
                     recompensa: mascotasRecompensa,
+                    estado : mascotasEstado,
                     location: LocationMascotas,
                     images: arrayImages,
                     createAt: new Date(),
@@ -52,7 +54,6 @@ export default function addMascotasForm(props){
                 })
                 .then(() => {
                     setIsLoading(false);
-                    console.log(navigation.navigate)
                     navigation.navigate('Mascotas');
                 })
                 .catch(() => {
@@ -95,7 +96,7 @@ export default function addMascotasForm(props){
            
            <UploadImagen imagesSelected={imagesSelected} setImagesSelected={setImagesSelected}/>
            <Button
-           title='notificar mascota'
+           title='Reportar mascota'
            onPress={addMascotas}
            buttonStyle={styles.btnAddMascotas}/>
            <Maps
@@ -213,6 +214,7 @@ function FormAdd(props){
         setIsVisibleMap,
         LocationMascotas
     } = props
+
     return(
         <View style={styles.viewForm}>
            <Input

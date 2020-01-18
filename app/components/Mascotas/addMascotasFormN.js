@@ -42,8 +42,7 @@ export default function addMascotasForm(props){
                 })
                 .then(() => {
                     setIsLoading(false);
-                    console.log(navigation.navigate)
-                    navigation.navigate('mascotasEncontradas');
+                    navigation.navigate('Search');
                 })
                 .catch(() => {
                     setIsLoading(false);

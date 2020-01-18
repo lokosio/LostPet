@@ -3,7 +3,7 @@ import {Icon} from 'react-native-elements'
 import {createAppContainer} from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import mascotasScreenStacks from './LostpetStack';
-import funcionesScreenStacks from './funcionesStacks.js'
+//import funcionesScreenStacks from './funcionesStacks.js'
 import MyAccountScreenStack from './MyAccountStack.js'
 import SearchScreenStack from './SearchStacks.js'
 import petEncontradasScreenStack from './petEncontradas.js'
@@ -23,7 +23,7 @@ const NavigationStacks = createBottomTabNavigator({
                />
            )
        })
-   },
+   },/*,
    funciones: {
      screen: funcionesScreenStacks,
      navigationOptions: () => ({
@@ -37,7 +37,7 @@ const NavigationStacks = createBottomTabNavigator({
         />
     )
      })
-   },
+   },*/
    Search: {
     screen: SearchScreenStack,
     navigationOptions: () => ({
@@ -84,7 +84,7 @@ const NavigationStacks = createBottomTabNavigator({
  },
  {
    initialRouteName: 'MyAccount',
-   order: ['Mascotas','Encontradas','funciones','Search','MyAccount'],
+   order: ['Mascotas','Encontradas','Search','MyAccount'],
    tabBarOptions: {
      inactiveTintColor: '#646464',
      activeTintColor: '#00a680'

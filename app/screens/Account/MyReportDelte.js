@@ -3,13 +3,29 @@ import {StyleSheet,ScrollView ,View, Text, Dimensions} from 'react-native';
 import {Icon, ListItem,Button} from 'react-native-elements'
 import Carousel from '../../components/carousel'
 import * as firebase from 'firebase';
+import {firebaseApp} from '../../Utils/FireBase'
+
+import 'firebase/firestore';
 import Map from '../../components/Map'
 const screenWidth = Dimensions.get('window').width;
-
+const db = firebase.firestore(firebaseApp);
 export default function Mascota(props){
     const {navigation} = props;
     const {pet} = navigation.state.params.pet.item;
     const [imageMascota, setImageMascota] = useState([]);
+    const [estado, setEstado] = useState(false);
+    const updateEstado = () => {
+        const mascotaRef = db.collection('mascotasPerdidas').doc(pet.id);
+
+        mascotaRef.get().then(response => {
+            const mascotaData = response.data();
+            const estadoMascota = false;
+
+            mascotaRef.update({estado: estadoMascota}).then(() => {
+                navigation.goBack();
+            })
+        })
+    }
 
     
 
@@ -45,6 +61,11 @@ export default function Mascota(props){
                phone={pet.phone}
                recompensa={pet.recompensa}
             />
+            <Button
+           title='Eliminar Reporte'
+           onPress={updateEstado}
+           buttonStyle={styles.btnAddMascotas}
+           />
       
         </ScrollView>
             
@@ -52,6 +73,8 @@ export default function Mascota(props){
         
     )
 }
+
+
 
 function TitleMascota(props){
     const {name, description} = props;
@@ -151,5 +174,9 @@ const styles = StyleSheet.create({
         borderBottomColor: '#d8d8d8',
         borderBottomWidth: 1
     },
+    btnAddMascotas: {
+        backgroundColor: '#00a680',
+        margin: 20
+       }
    
 })
