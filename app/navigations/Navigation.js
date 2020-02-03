@@ -23,39 +23,13 @@ const NavigationStacks = createBottomTabNavigator({
                />
            )
        })
-   },/*,
-   funciones: {
-     screen: funcionesScreenStacks,
-     navigationOptions: () => ({
-       tabBarLabel: 'Funciones',
-       tabBarIcon: ({ tintColor}) => (
-        <Icon
-          type='material-community'
-          name='dots-horizontal-circle-outline'
-          size={22}
-          color={tintColor}               
-        />
-    )
-     })
-   },*/
-   Search: {
-    screen: SearchScreenStack,
-    navigationOptions: () => ({
-      tabBarLabel: 'Buscar',
-      tabBarIcon: ({ tintColor}) => (
-       <Icon
-         type='material-community'
-         name='magnify'
-         size={22}
-         color={tintColor}               
-       />
-   )
-    })
-  },
+   },
+   
    MyAccount: {
     screen: MyAccountScreenStack,
     navigationOptions: () => ({
       tabBarLabel: 'Mi Cuenta',
+      
       tabBarIcon: ({ tintColor}) => (
        <Icon
          type='material-community'
@@ -84,10 +58,11 @@ const NavigationStacks = createBottomTabNavigator({
  },
  {
    initialRouteName: 'MyAccount',
-   order: ['Mascotas','Encontradas','Search','MyAccount'],
+   order: ['Mascotas','Encontradas','MyAccount'],
    tabBarOptions: {
      inactiveTintColor: '#646464',
-     activeTintColor: '#00a680'
+     activeTintColor: '#f4511e',
+     
    }
  }
  );

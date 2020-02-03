@@ -4,7 +4,7 @@ import {Icon, ListItem,Button} from 'react-native-elements'
 import Carousel from '../../components/carousel'
 import * as firebase from 'firebase';
 import {firebaseApp} from '../../Utils/FireBase'
-
+import {ToastAndroid} from 'react-native';
 import 'firebase/firestore';
 import Map from '../../components/Map'
 const screenWidth = Dimensions.get('window').width;
@@ -13,7 +13,8 @@ export default function Mascota(props){
     const {navigation} = props;
     const {pet} = navigation.state.params.pet.item;
     const [imageMascota, setImageMascota] = useState([]);
-    const [estado, setEstado] = useState(false);
+   
+
     const updateEstado = () => {
         const mascotaRef = db.collection('mascotasPerdidas').doc(pet.id);
 
@@ -22,7 +23,8 @@ export default function Mascota(props){
             const estadoMascota = false;
 
             mascotaRef.update({estado: estadoMascota}).then(() => {
-                navigation.goBack();
+                ToastAndroid.show('Reporte eliminado!', ToastAndroid.SHORT);
+                navigation.navigate('Mascotas')
             })
         })
     }
@@ -41,7 +43,7 @@ export default function Mascota(props){
             }));            
             setImageMascota(arrayUrls);            
         })();
-
+        
     },[]);
     return(
         <ScrollView style={StyleSheet.viewBody}>
@@ -61,11 +63,12 @@ export default function Mascota(props){
                phone={pet.phone}
                recompensa={pet.recompensa}
             />
-            <Button
+            {pet.estado && <Button
            title='Eliminar Reporte'
            onPress={updateEstado}
            buttonStyle={styles.btnAddMascotas}
-           />
+           />}
+            
       
         </ScrollView>
             

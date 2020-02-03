@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet,button, Button,ImageBackground,ScrollView,RefreshControl,Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionButton from 'react-native-action-button';
 import { firebaseApp } from '../../Utils/FireBase';
@@ -9,15 +9,17 @@ import Loading from '../../components/Loading'
 import ListMascotas from '../../components/Mascotas/ListMascotas'
 import Funciones from '../funciones'
 const db = firebase.firestore(firebaseApp);
+const screenWidth = Dimensions.get('window').height;
 
 export default function Mascotas(props){
 
-   const {navigation} = props;
-   const [user, setUser] = useState(null);
+    const {navigation} = props;
+    const [user, setUser] = useState(null);
     const [mascotas, setMascotas] = useState([]);
     const [startMascotas, setStartMascotas] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [totalMascotas, setTotalMascotas] = useState(0);
+    const [isReloadMascota, setIsRealoadMascota] = useState(false);
     const limitMascotas = 8;
 
     useEffect(() => {
@@ -26,12 +28,14 @@ export default function Mascotas(props){
         });
 
     }, []);
+
     useEffect(() => {
         db.collection('mascotasPerdidas')
         .get()
         .then(snap => {
             setTotalMascotas(snap.size);
             });
+
         (async () => {
                const resultMascotas = [];
                const mascotas = db
@@ -43,6 +47,7 @@ export default function Mascotas(props){
                        response.forEach(doc => {
                             let pet = doc.data();
                             pet.id = doc.id;
+                            
                             if(pet.estado == true){
                             resultMascotas.push({pet});
                             }                  
@@ -50,10 +55,16 @@ export default function Mascotas(props){
                    setMascotas(resultMascotas);
                })
            })();
-    }, []);
+           console.log('1--'+isReloadMascota+'--1')
+           setIsRealoadMascota(false);
+           setIsLoading(false)
+           console.log('2--'+isReloadMascota+'--2')
+          
+    }, [isReloadMascota]);
 
     const handleLoadMore = async () => {
         const resultMascotas = [];
+        console.log('6--'+mascotas.length+'--6'+ totalMascotas)
         mascotas.length < totalMascotas && setIsLoading(true);
 
         const mascotasDB = db
@@ -75,36 +86,58 @@ export default function Mascotas(props){
                 resultMascotas.push({pet}) 
             });
             setMascotas([...mascotas, ...resultMascotas]);
+           
         });
     };
- 
+
+   
     return (
-        <View style={styles.container}>
-            {user && <ListMascotas
+      <View  style={styles.container}>
+      
+           {user && <ListMascotas
            mascotas={mascotas}
            isLoading={isLoading}
            handleLoadMore={handleLoadMore}
-           navigation={navigation}/> 
+           navigation={navigation}
+           setIsRealoadMascota={setIsRealoadMascota}
+           isReloadMascota={isReloadMascota}
+           setIsLoading={setIsLoading}
+           
+           /> 
            }
-           {user && <AcctionButton navigation={navigation}/>}
+           {user && <AcctionButton mascotas={mascotas} navigation={navigation} setIsRealoadMascota={setIsRealoadMascota} setIsLoading={setIsLoading}/>}
+           
            {!user && <Text>debe iniciar sesion</Text>}
            
         </View>
+        
+
+      
+       
         
     )
 }
 
 function AcctionButton(props){
-    const {navigation} = props;
+    const {navigation, setIsRealoadMascota,setIsLoading, mascotas} = props;
     return (
         <ActionButton buttonColor="rgba(231,76,60,1)">
         <ActionButton.Item
           buttonColor="#9b59b6"
           title="Reportar mi mascota perdida"
-          onPress={() => navigation.navigate("addMascotas")}>
+          onPress={() => navigation.navigate("addMascotas",{setIsRealoadMascota})}>
           <Icon name="paw" style={styles.actionButtonIcon} />
         </ActionButton.Item>
+        <ActionButton.Item
+          buttonColor="#9b59b6"
+          title="Mapa"
+          onPress={() => navigation.navigate("Mapa",{mascotas})}>
+          <Icon name="map-marker" style={styles.actionButtonIcon} />
+        </ActionButton.Item>
+        
+             
         </ActionButton>
+        
         
       );
 }
@@ -112,7 +145,7 @@ function AcctionButton(props){
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      
+      backgroundColor: '#F1F1F1'
     },
     welcome: {
       fontSize: 20,

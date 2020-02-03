@@ -15,7 +15,7 @@
     "splash": {
       "image": "./assets/inicio.png",
       "resizeMode": "contain",
-      "backgroundColor": "#00a680"
+      "backgroundColor": "#FF9121"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -27,6 +27,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.isof.lostpet",
       "permissions": [
         "CAMERA_ROLL",
         "LOCATION"

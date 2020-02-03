@@ -4,16 +4,19 @@ import {Icon, ListItem,Button} from 'react-native-elements'
 import Carousel from '../../components/carousel'
 import * as firebase from 'firebase';
 import Map from '../../components/Map'
+
+
 const screenWidth = Dimensions.get('window').width;
 
-export default function Mascota(props){
+export default function MascotaMarker(props){
+    //const {isVisible} = props;
+
     const {navigation} = props;
-    const {pet} = navigation.state.params.pet.item;
+    const {marker} = navigation.state.params;
     const [imageMascota, setImageMascota] = useState([]);
-
-    
-
-    useEffect(() => {
+    const pet =  marker.pet;
+   
+   useEffect(() => {
         const arrayUrls = [];
         (async () => {
             await Promise.all(pet.images.map(async idImage => {
@@ -27,7 +30,7 @@ export default function Mascota(props){
         })();
 
     },[]);
-    
+
     return(
         <ScrollView style={StyleSheet.viewBody}>
             <Carousel
@@ -152,5 +155,17 @@ const styles = StyleSheet.create({
         borderBottomColor: '#d8d8d8',
         borderBottomWidth: 1
     },
-   
+
 })
+
+/*
+import React from 'react'
+import { Text } from 'react-native'
+
+export default function mascotaMarker(props){
+   
+    return(
+        <Text>hola</Text>
+    )
+
+}*/

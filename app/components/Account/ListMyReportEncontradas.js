@@ -1,24 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import {StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity,RefreshControl} from 'react-native'
-import {Image} from 'react-native'
+import {StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity, Alert} from 'react-native'
+import {Image,Icon} from 'react-native-elements'
 import * as firebase from 'firebase';
 
-function wait(timeout) {
-    return new Promise(resolve => {
-      setTimeout(resolve, timeout);
-    });
-  }
 
 export default function ListMascotas(props){
-   const {mascotas, isLoading, handleLoadMore, navigation, setIsRealoadMascota,isReloadMascota} = props;
-   const onRefresh = React.useCallback(() => {
-    setIsRealoadMascota(true);
-
-    wait(2000).then(() => setIsRealoadMascota(false));
-    }, [isReloadMascota]);
+   const {mascotas, isLoading, handleLoadMore, navigation} = props;
+   
 
     return(
       <View>
+        
           {mascotas ? (
               <FlatList
               data={mascotas}
@@ -27,9 +19,6 @@ export default function ListMascotas(props){
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0}
               ListFooterComponent={<FooterList isLoading={isLoading}/>}
-              refreshControl={
-                <RefreshControl refreshing={isReloadMascota} onRefresh={onRefresh} />
-              }
               />
           ) : (
               <View style={StyleSheet.loadingMascotas}>
@@ -44,9 +33,13 @@ export default function ListMascotas(props){
 }
 
 function Pets(props){
-    const {pet,navigation} = props;
-    const {description,images} = pet.item.pet;
+    const {pet, navigation} = props;
+    const { images,description} = pet.item.pet;
     const [imageMascota, setImageMascota] = useState(null);
+    const [color, setColor] = useState('');
+
+  
+    
     
     useEffect(() => {
         const image = images[0];
@@ -58,9 +51,28 @@ function Pets(props){
            
         });
     });
+
+    useEffect(() => {
+        
+        if(pet.item.pet.estado){
+            
+            setColor('rgb(0,200,0)')
+        }else{
+            setColor('rgb(255,0,0)')      
+            
+        }
+        
+    });
+    
+
+    
     
     return(
-        <TouchableOpacity onPress={() => navigation.navigate('Encontrada',{pet})}>
+        
+        <View>
+        
+        
+        <TouchableOpacity onPress={() => navigation.navigate('DeleteEn',{pet}) } >
             <View style={styles.viewMascota}>
               <View style={styles.viewMascotaImage}>
                   <Image
@@ -70,14 +82,24 @@ function Pets(props){
                     PlaceholderContent={<ActivityIndicator color='fff'/>}
                   />
               </View>
-              <View>
-              <Text style={styles.mascotaDescription}>
+              <View style={{ width:'75%'}}>
+                
+                
+                <Text style={styles.mascotaDescription}>
                     {description.substr(0, 60)}...
                 </Text>
+                <Icon
+                iconStyle={{alignSelf:  'flex-end', color: color, marginTop: -50}}
+                name='paw'
+                type='material-community'
+                
+              />
               </View>
+              
             </View>
 
         </TouchableOpacity>
+        </View>
         
     );
 }
@@ -112,16 +134,15 @@ const styles = StyleSheet.create({
     viewMascota: {
         flexDirection: 'row',
         margin:  10,
-        backgroundColor: '#fff',
-        borderRadius: 50
+       
     },
     viewMascotaImage: {
         marginRight: 15
+        
     },
     imageMascota: {
         width: 80,
-        height: 80,
-        borderRadius: 50
+        height: 80
     },
     mascotasName:{
         fontWeight: 'bold'
@@ -133,8 +154,7 @@ const styles = StyleSheet.create({
     mascotaDescription: {
         paddingTop: 2,
         color: 'grey',
-        width: 270,
-       
+        width: '90%'
     }, 
     loaderMascotas:{
         marginTop: 10,
@@ -144,5 +164,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 20,
         alignItems: 'center'
+    }, 
+    fondo: {
+        
+        backgroundColor:'rgba(0,200,0,0.1)',
+    
     }
 });

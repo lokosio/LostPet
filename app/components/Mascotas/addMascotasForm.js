@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import {Text, StyleSheet, View, ScrollView, Alert, Dimensions, ToastAndroid} from 'react-native'
+import {Text, StyleSheet, View, ScrollView, Alert, Dimensions, ToastAndroid,TextInput} from 'react-native'
 import {Icon, Avatar, Image, Input, Button} from 'react-native-elements';
 import MapView from 'react-native-maps';
 import * as Permissions from 'expo-permissions'
@@ -17,7 +17,7 @@ const widthScreen = Dimensions.get('window').width;
 export default function addMascotasForm(props){
 
     const [imagesSelected, setImagesSelected] = useState([]);
-    const{ navigation, setIsLoading} =props;
+    const{ navigation, setIsLoading, setIsRealoadMascota} =props;
     const [mascotasName, setMascotasName]= useState('');
     const [mascotasAddress, setMascotasAdress] = useState('');
     const [mascotasDescription, setMascotastDescription] = useState('');
@@ -54,6 +54,7 @@ export default function addMascotasForm(props){
                 })
                 .then(() => {
                     setIsLoading(false);
+                    setIsRealoadMascota(true);
                     navigation.navigate('Mascotas');
                 })
                 .catch(() => {
@@ -149,6 +150,7 @@ function UploadImagen(props){
             ToastAndroid.show('has cerrado la galeria sin seleccionar ninguna imagen', ToastAndroid.SHORT);
         }else{
             setImagesSelected([...imagesSelected, result.uri]);
+            console.log(imagesSelected.length)
         }
 
       }
@@ -178,6 +180,7 @@ function UploadImagen(props){
 
     return(
        <View style={styles.viewImages}>
+           {console.log('hola5'+imagesSelected)}
            {imagesSelected.length < 5 && (
                <Icon
                type='material-community'
@@ -189,6 +192,7 @@ function UploadImagen(props){
            )}
            
            {imagesSelected.map(imageMascotas => (
+               console.log('holaImage',imageMascotas),
                <Avatar
                key={imageMascotas}
                onPress={() => removeImage(imageMascotas)}
@@ -219,31 +223,34 @@ function FormAdd(props){
         <View style={styles.viewForm}>
            <Input
               placeholder='Nombre de la mascota'
-              containerStyle={styles.input}
+              
               onChange={e => setMascotasName(e.nativeEvent.text)}
            />
 
            <Input
               placeholder='Direccion'
-              containerStyle={styles.input}
+              
               rightIcon={{
                   type: 'material-community',
                   name: 'google-maps',
-                  color: LocationMascotas ? '#00a680' : '#c2c2c2',
+                  color: LocationMascotas ? '#FF8E00' : '#c2c2c2',
                   onPress: () => setIsVisibleMap(true)
               }}
               onChange={e => setMascotasAdress(e.nativeEvent.text)}
            />
-           <Input
+           <TextInput
+             keyboardType='numeric'
               placeholder='Telefono de contacto'
-              containerStyle={styles.input}
+              style={styles.input}
               onChange={e => setMascotasPhone(e.nativeEvent.text)}
            />
-           <Input
+           <TextInput
+           keyboardType='numeric'
               placeholder='Recompensa'
-              containerStyle={styles.input}
+              style={styles.input}
               onChange={e => setMascotaRecompensa(e.nativeEvent.text)}
            />
+         
            <Input
               placeholder='Descripcion de la mascota'
               multiline={true}
@@ -391,8 +398,16 @@ const styles = StyleSheet.create({
 
    },
    btnAddMascotas: {
-    backgroundColor: '#00a680',
+    backgroundColor: '#FF8E00',
     margin: 20
+   },
+   input: {
+    borderBottomWidth: 1.5,
+    borderColor: '#9F9F9F',
+    width: '95%',
+    height: 50,
+    alignSelf: 'center',
+    fontSize: 18
    }
 });
 

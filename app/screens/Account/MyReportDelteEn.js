@@ -3,13 +3,31 @@ import {StyleSheet,ScrollView ,View, Text, Dimensions} from 'react-native';
 import {Icon, ListItem,Button} from 'react-native-elements'
 import Carousel from '../../components/carousel'
 import * as firebase from 'firebase';
+import {firebaseApp} from '../../Utils/FireBase'
+import {ToastAndroid} from 'react-native';
+import 'firebase/firestore';
 import Map from '../../components/Map'
 const screenWidth = Dimensions.get('window').width;
-
+const db = firebase.firestore(firebaseApp);
 export default function Mascota(props){
     const {navigation} = props;
     const {pet} = navigation.state.params.pet.item;
     const [imageMascota, setImageMascota] = useState([]);
+   
+
+    const updateEstado = () => {
+        const mascotaRef = db.collection('mascotasEncontradas').doc(pet.id);
+
+        mascotaRef.get().then(response => {
+            const mascotaData = response.data();
+            const estadoMascota = false;
+
+            mascotaRef.update({estado: estadoMascota}).then(() => {
+                ToastAndroid.show('Reporte eliminado!', ToastAndroid.SHORT);
+                navigation.navigate('Search')
+            })
+        })
+    }
 
     
 
@@ -17,7 +35,7 @@ export default function Mascota(props){
         const arrayUrls = [];
         (async () => {
             await Promise.all(pet.images.map(async idImage => {
-              await firebase.storage().ref(`mascotas-imagenes/${idImage}`)
+              await firebase.storage().ref(`mascotas-imagenes-encontradas/${idImage}`)
               .getDownloadURL()
               .then(imageUrl => {
                   arrayUrls.push(imageUrl)
@@ -25,9 +43,8 @@ export default function Mascota(props){
             }));            
             setImageMascota(arrayUrls);            
         })();
-
+        
     },[]);
-    
     return(
         <ScrollView style={StyleSheet.viewBody}>
             <Carousel
@@ -36,16 +53,21 @@ export default function Mascota(props){
               height={250}
             />
             <TitleMascota 
-               name={pet.name}
+              
                description={pet.description}
             />
             <MascotaInfo
                location={pet.location}
-               name={pet.name}
-               address={pet.address}
+               
                phone={pet.phone}
-               recompensa={pet.recompensa}
+               
             />
+            {pet.estado && <Button
+           title='Eliminar Reporte'
+           onPress={updateEstado}
+           buttonStyle={styles.btnAddMascotas}
+           />}
+            
       
         </ScrollView>
             
@@ -54,15 +76,15 @@ export default function Mascota(props){
     )
 }
 
+
+
 function TitleMascota(props){
-    const {name, description} = props;
+    const {description} = props;
 
 
     return(
         <View style={styles.viewMascotaTitle}>
-           <View style={styles.viewName}>
-              <Text style={styles.nameMascota}>{name}</Text>
-           </View>
+           
            <Text style={styles.descriptionMascota}>{description}</Text>
         </View>
     )
@@ -70,34 +92,24 @@ function TitleMascota(props){
 }
 
 function MascotaInfo(props){
-    const {location, name , address, phone, recompensa } = props;
+    const {location, phone  } = props;
 
     const listInfo = [
-        {
-            text: address,
-            iconName: 'map-marker',
-            iconType: 'material-community',
-            action: null
-        }, 
+        
         {
             text: phone,
             iconName: 'phone',
             iconType: 'material-community',
             action: null
         },
-        {
-            text: recompensa,
-            iconName: 'currency-usd',
-            iconType: 'material-community',
-            action: null
-        }
+        
 
     ]
 
     return(
         <View style={styles.viewPetInfo}>
             <Text style={styles.petInfoTitle}>Informacion sobre la mascota</Text>
-            <Map location={location} name={name} height={100}/>
+            <Map location={location}  height={100}/>
            
            {listInfo.map((item, index) => (
                
@@ -152,5 +164,9 @@ const styles = StyleSheet.create({
         borderBottomColor: '#d8d8d8',
         borderBottomWidth: 1
     },
+    btnAddMascotas: {
+        backgroundColor: '#00a680',
+        margin: 20
+       }
    
 })

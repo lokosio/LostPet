@@ -8,12 +8,14 @@ import { colors } from 'react-native-elements'
 export default function addMascotas(props){
   
     const {navigation} = props;
+    const {setIsRealoadMascota} = navigation.state.params;
     const [isLoading, setIsLoading] = useState(false);
+    
     return (
         <KeyboardAwareScrollView>
 
         <View>
-        <AddMascotasForm setIsLoading={setIsLoading} navigation={navigation}/>
+        <AddMascotasForm setIsLoading={setIsLoading} navigation={navigation} setIsRealoadMascota={setIsRealoadMascota}/>
         <Loading isVisible={isLoading} text='creando Mascota'/>           
         </View>
       </KeyboardAwareScrollView>

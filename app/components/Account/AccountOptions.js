@@ -14,45 +14,37 @@ export default function AccountOptions(props){
         title: 'cambiar Nombre y Apellidos',
         iconType: 'material-community',
         iconNameLeft: 'account-circle',
-        iconColorLeft: '#ccc',
+        iconColorLeft: '#FC8600',
         iconNameRight: 'chevron-right',
-        iconColorRight: '#ccc',
+        iconColorRight: '#00a680',
         onPress: () => console.log('change displayName')
     },
     {
         title: 'cambiar Email',
         iconType: 'material-community',
         iconNameLeft: 'at',
-        iconColorLeft: '#ccc',
+        iconColorLeft: '#FC8600',
         iconNameRight: 'chevron-right',
-        iconColorRight: '#ccc',
+        iconColorRight: '#00a680',
         onPress: () => console.log('change Email')
     },
     {
         title: 'cambiar contraseña',
         iconType: 'material-community',
         iconNameLeft: 'lock-reset',
-        iconColorLeft: '#ccc',
+        iconColorLeft: '#FC8600',
         iconNameRight: 'chevron-right',
-        iconColorRight: '#ccc',
+        iconColorRight: '#00a680',
         onPress: () => console.log('change contraseña')
     },
-    {
-        title: 'Ver Id de usuario',
-        iconType: 'material-community',
-        iconNameLeft: 'account-card-details',
-        iconColorLeft: '#ccc',
-        iconNameRight: 'chevron-right',
-        iconColorRight: '#ccc',
-        onPress: () => Alert.alert('Id usuario',firebaseApp.auth().currentUser.uid)
-    },
+    
     {
         title: 'Ver mis reportes',
         iconType: 'material-community',
-        iconNameLeft: 'paw',
-        iconColorLeft: '#ccc',
+        iconNameLeft: 'cat',
+        iconColorLeft: '#FC8600',
         iconNameRight: 'chevron-right',
-        iconColorRight: '#ccc',
+        iconColorRight: '#00a680',
         onPress: () => navigation.navigate('MisReportess')  
     }
 ];

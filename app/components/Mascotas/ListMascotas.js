@@ -1,23 +1,39 @@
 import React, { useState, useEffect } from 'react'
-import {StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native'
-import {Image} from 'react-native-elements'
-import * as firebase from 'firebase';
+import {StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity,RefreshControl} from 'react-native'
+import {Image} from 'react-native'
 
+import * as firebase from 'firebase';
+function wait(timeout) {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+  }
 
 export default function ListMascotas(props){
-   const {mascotas, isLoading, handleLoadMore, navigation} = props;
-   
+   const {mascotas, isLoading, setIsLoading,handleLoadMore, navigation,setIsRealoadMascota,isReloadMascota} = props;
+   const item = mascotas[1];
+  
+   const onRefresh = React.useCallback(() => {
+    setIsRealoadMascota(true);
+    setIsLoading(true)
+    console.log('3--'+isReloadMascota+'--3')
+    wait(2000).then(() => setIsRealoadMascota(false),setIsLoading(false));
+    console.log('4--'+isReloadMascota+'--4')
+    }, [isReloadMascota]);
 
     return(
       <View>
           {mascotas ? (
               <FlatList
-              data={mascotas}
+              data={mascotas }
               renderItem={pet => <Pets pet={pet} navigation={navigation}/>}
               keyExtractor={(item, index) => index.toString()}
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0}
               ListFooterComponent={<FooterList isLoading={isLoading}/>}
+              refreshControl={
+                <RefreshControl refreshing={isReloadMascota} onRefresh={onRefresh} />
+              }
               />
           ) : (
               <View style={StyleSheet.loadingMascotas}>
@@ -36,6 +52,7 @@ function Pets(props){
     const {name, address, description, images} = pet.item.pet;
     const [imageMascota, setImageMascota] = useState(null);
     
+    
     useEffect(() => {
         const image = images[0];
         firebase.storage()
@@ -43,7 +60,6 @@ function Pets(props){
         .getDownloadURL()
         .then(result => {
             setImageMascota(result);
-           
         });
     });
     
@@ -55,6 +71,7 @@ function Pets(props){
                     resizeMode= 'cover'
                     source={{uri: imageMascota}}
                     style={styles.imageMascota} 
+                    
                     PlaceholderContent={<ActivityIndicator color='fff'/>}
                   />
               </View>
@@ -74,15 +91,14 @@ function Pets(props){
 
 function FooterList(props){
   const { isLoading} = props;
-  
-  
+  console.log('5--'+isLoading+'--5')
   if(isLoading){
       return(
           <View style={styles.loadingMascotas}>
               <ActivityIndicator size='large'/>
           </View>
       )
-
+      
   }else{
       return(
         <View style={styles.notFoundMascotas}>
@@ -90,8 +106,6 @@ function FooterList(props){
       </View>
 
       )
-      
-
   }
 }
 const styles = StyleSheet.create({
@@ -101,14 +115,20 @@ const styles = StyleSheet.create({
     },
     viewMascota: {
         flexDirection: 'row',
-        margin:  10
+        margin:  10,
+        backgroundColor: '#fff',
+        
+        borderRadius: 50,
     },
     viewMascotaImage: {
         marginRight: 15
     },
     imageMascota: {
         width: 80,
-        height: 80
+        height: 80,
+        borderRadius: 50,
+        
+        
     },
     mascotasName:{
         fontWeight: 'bold'

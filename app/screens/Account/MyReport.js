@@ -1,97 +1,93 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View,Switch,ScrollView,RefreshControl, StyleSheet} from 'react-native';
 import { firebaseApp } from '../../Utils/FireBase';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import Loading from '../../components/Loading'
-import ListMascotas from '../../components/Account/ListMyReport'
+import ListMascotas from './MyReportPer'
+import ListMascotasEn from './MyReportEn'
 import Funciones from '../funciones'
 const db = firebase.firestore(firebaseApp);
-
+function wait(timeout) {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+  }
 export default function Mascotas(props){
 
     const {navigation} = props;
-    const [user, setUser] = useState(null);
-    const [mascotas, setMascotas] = useState([]);
-    const [startMascotas, setStartMascotas] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [totalMascotas, setTotalMascotas] = useState(0);
-    const limitMascotas = 8;
-     
-
-    useEffect(() => {
-        firebase.auth().onAuthStateChanged(userInfo => {
-            setUser(userInfo);
-        });
-
-    }, []);
-
-    useEffect(() => {
-        db.collection('mascotasPerdidas')
-        .get()
-        .then(snap => {
-            setTotalMascotas(snap.size);
-            
-           });
-           
-           (async () => {
-               const resultMascotas = [];
-               const mascotas = db
-               .collection('mascotasPerdidas')
-               .orderBy('createAt', 'desc')
-               .limit(limitMascotas)
-                      
-               await mascotas.get().then(response => {
-                    setStartMascotas(response.docs[response.docs.length - 1]);
-                       
-                   response.forEach(doc => {
-                   
-                       let pet = doc.data();
-                       pet.id = doc.id;  
-                      
-                       if(pet.createBy === firebaseApp.auth().currentUser.uid ){
-                         resultMascotas.push({pet});
-                       }                      
-                   });
-                   setMascotas(resultMascotas);
-                })
-           })();
+    const [interruptor, setInterruptor] = useState(false);
+    const [isReloadMascota, setIsRealoadMascota] = useState(false);
+    const toggleSwitch1 = (value) => {
+        setInterruptor(value)
+        console.log(value)
+     }
+     const onRefresh = React.useCallback(() => {
+        setIsRealoadMascota(true);
     
-    }, []);
+        wait(2000).then(() => setIsRealoadMascota(false));
+      }, [isReloadMascota]);
 
-    const handleLoadMore = async () => {
-        const resultMascotas = [];
-        mascotas.length < totalMascotas && setIsLoading(true);
+     
+    if(interruptor){
+        return(
+            <ScrollView refreshControl={
+                <RefreshControl refreshing={isReloadMascota} onRefresh={onRefresh}  />
+              }>
+                <View style={{marginBottom:10, marginTop:10}}>
+                  <Text style={styles.textoEn}>Encontradas</Text>
+                <Switch onValueChange = {toggleSwitch1}
+                  value = {interruptor}
+                  thumbColor= '#f4511e'
+                  trackColor={{ true: '#FFD8B9'}}
+                  style={{alignSelf: 'center', marginTop:-25}}/>
+               </View>
+             <ListMascotasEn navigation={navigation} setInterruptor={setInterruptor} isReloadMascota={isReloadMascota} setIsRealoadMascota={setIsRealoadMascota}/>
+            
 
-        const mascotasDB = db
-        .collection('mascotasPerdidas')
-        .orderBy('createAt','desc')
-        .startAfter(startMascotas.data().createAt)
-        .limit(limitMascotas);
+            </ScrollView>
+            
+            
+        )
+      
+    }else{
+        return(
+            <ScrollView refreshControl={
+                <RefreshControl refreshing={isReloadMascota} onRefresh={onRefresh} />
+              }>
+                <View style={{marginBottom:10, marginTop:10}}>
+                <Text style={styles.textoPer}> Perdidas</Text>
+                <Switch onValueChange = {toggleSwitch1}
+                  value = {interruptor}
+                  thumbColor= '#00a680'
+                  trackColor={{ false: '#9DCABF'}}
+                  style={{alignSelf: 'center', marginTop:-25}}/>
+              </View>
+             <ListMascotas navigation={navigation} setInterruptor={setInterruptor} isReloadMascota={isReloadMascota} setIsRealoadMascota={setIsRealoadMascota}/>
+            
 
-        await mascotasDB.get().then(response => {
-            if(response.docs.length > 0){
-                setStartMascotas(response.docs[response.docs.length - 1]);
-            }else {
-                setIsLoading(false);
-            }
-
-            response.forEach(doc => {
-                let pet = doc.data();
-                pet.id = doc.id;
-                resultMascotas.push({pet}) 
-            });
-            setMascotas([...mascotas, ...resultMascotas]);
-        });
-    };
- 
-    return (
-        <View>
-           <ListMascotas
-           mascotas={mascotas}
-           isLoading={isLoading}
-           handleLoadMore={handleLoadMore}
-           navigation={navigation}/>
-        </View>
-    )
+            </ScrollView>
+            
+        )
+       
+    }
+    
 }
+
+const styles = StyleSheet.create({
+  textoPer: {
+    alignSelf: 'flex-start',
+    color: '#00a680',
+    fontSize: 20,
+    marginTop: 10,
+    marginLeft: 30
+    },
+    textoEn: {
+      alignSelf: 'flex-end',
+      color: '#f4511e',
+      fontSize: 20,
+      marginTop: 10,
+      marginLeft: 30
+      }
+
+});

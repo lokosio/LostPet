@@ -10,6 +10,7 @@ export default function Mascota(props){
     const {navigation} = props;
     const {pet} = navigation.state.params.pet.item;
     const [imageMascota, setImageMascota] = useState([]);
+    
 
     
 
@@ -17,7 +18,7 @@ export default function Mascota(props){
         const arrayUrls = [];
         (async () => {
             await Promise.all(pet.images.map(async idImage => {
-              await firebase.storage().ref(`mascotas-imagenes/${idImage}`)
+              await firebase.storage().ref(`mascotas-imagenes-encontradas/${idImage}`)
               .getDownloadURL()
               .then(imageUrl => {
                   arrayUrls.push(imageUrl)
@@ -35,16 +36,10 @@ export default function Mascota(props){
               width={screenWidth}
               height={250}
             />
-            <TitleMascota 
-               name={pet.name}
-               description={pet.description}
-            />
+           
             <MascotaInfo
                location={pet.location}
-               name={pet.name}
-               address={pet.address}
                phone={pet.phone}
-               recompensa={pet.recompensa}
             />
       
         </ScrollView>
@@ -54,51 +49,25 @@ export default function Mascota(props){
     )
 }
 
-function TitleMascota(props){
-    const {name, description} = props;
-
-
-    return(
-        <View style={styles.viewMascotaTitle}>
-           <View style={styles.viewName}>
-              <Text style={styles.nameMascota}>{name}</Text>
-           </View>
-           <Text style={styles.descriptionMascota}>{description}</Text>
-        </View>
-    )
-
-}
 
 function MascotaInfo(props){
-    const {location, name , address, phone, recompensa } = props;
-
+    const {location,phone } = props;
     const listInfo = [
-        {
-            text: address,
-            iconName: 'map-marker',
-            iconType: 'material-community',
-            action: null
-        }, 
+        
         {
             text: phone,
             iconName: 'phone',
             iconType: 'material-community',
             action: null
-        },
-        {
-            text: recompensa,
-            iconName: 'currency-usd',
-            iconType: 'material-community',
-            action: null
         }
-
+        
     ]
 
     return(
         <View style={styles.viewPetInfo}>
             <Text style={styles.petInfoTitle}>Informacion sobre la mascota</Text>
-            <Map location={location} name={name} height={100}/>
-           
+            <Map location={location}  height={100}/>
+            
            {listInfo.map((item, index) => (
                
                 <ListItem
@@ -112,10 +81,7 @@ function MascotaInfo(props){
                    containerStyle={styles.containerListItem}
                 />
            ))}
-            
-
-        
-            
+                       
         </View>
     )
 }

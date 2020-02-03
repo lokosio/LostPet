@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import {StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native'
-import {Image} from 'react-native-elements'
+import {StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity, Alert} from 'react-native'
+import {Image,Icon} from 'react-native-elements'
 import * as firebase from 'firebase';
 
 
@@ -10,6 +10,7 @@ export default function ListMascotas(props){
 
     return(
       <View>
+        
           {mascotas ? (
               <FlatList
               data={mascotas}
@@ -35,6 +36,10 @@ function Pets(props){
     const {pet, navigation} = props;
     const {name, address, description, images} = pet.item.pet;
     const [imageMascota, setImageMascota] = useState(null);
+    const [color, setColor] = useState('');
+
+  
+    
     
     useEffect(() => {
         const image = images[0];
@@ -46,9 +51,28 @@ function Pets(props){
            
         });
     });
+
+    useEffect(() => {
+        
+        if(pet.item.pet.estado){
+            
+            setColor('rgb(0,200,0)')
+        }else{
+            setColor('rgb(255,0,0)')      
+            
+        }
+        
+    });
+    
+
+    
     
     return(
-        <TouchableOpacity onPress={() => navigation.navigate('Delete',{pet})}>
+        
+        <View>
+        
+        
+        <TouchableOpacity onPress={() => navigation.navigate('Delete',{pet}) } >
             <View style={styles.viewMascota}>
               <View style={styles.viewMascotaImage}>
                   <Image
@@ -58,16 +82,24 @@ function Pets(props){
                     PlaceholderContent={<ActivityIndicator color='fff'/>}
                   />
               </View>
-              <View>
+              <View style={{ width:'75%'}}>
                 <Text style={styles.mascotasName}>{name}</Text>
                 <Text style={styles.mascotaAddress}>{address}</Text>
                 <Text style={styles.mascotaDescription}>
                     {description.substr(0, 60)}...
                 </Text>
+                <Icon
+                iconStyle={{alignSelf:  'flex-end', color: color, marginTop: -50}}
+                name='paw'
+                type='material-community'
+                
+              />
               </View>
+              
             </View>
 
         </TouchableOpacity>
+        </View>
         
     );
 }
@@ -101,10 +133,12 @@ const styles = StyleSheet.create({
     },
     viewMascota: {
         flexDirection: 'row',
-        margin:  10
+        margin:  10,
+       
     },
     viewMascotaImage: {
         marginRight: 15
+        
     },
     imageMascota: {
         width: 80,
@@ -130,5 +164,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 20,
         alignItems: 'center'
+    }, 
+    fondo: {
+        
+        backgroundColor:'rgba(0,200,0,0.1)',
+    
     }
 });

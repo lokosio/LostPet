@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import {Text, StyleSheet, View, ScrollView, Alert, Dimensions, ToastAndroid} from 'react-native'
+import {Text, StyleSheet, View, ScrollView, Alert, Dimensions, ToastAndroid,TextInput} from 'react-native'
 import {Icon, Avatar, Image, Input, Button} from 'react-native-elements';
 import MapView from 'react-native-maps';
 import * as Permissions from 'expo-permissions'
@@ -10,20 +10,24 @@ import uuid from 'uuid/v4';
 import {firebaseApp} from '../../Utils/FireBase'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-
+import Camara from '../../components/Mascotas/camara'
 const db = firebase.firestore(firebaseApp);
 const widthScreen = Dimensions.get('window').width;
 
 export default function addMascotasForm(props){
-
+       
     const [imagesSelected, setImagesSelected] = useState([]);
-    const{ navigation, setIsLoading} =props;
+    const [mascotasEstado, setMascotasEstado] = useState(true);
+    const [imageSnap, setImageSnap] = useState([]);
+    const{ navigation, setIsLoading, setIsRealoadMascota } = props;
+    const [mascotasPhone, setMascotasPhone] = useState('');
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [LocationMascotas,setLocationMascotas] = useState(null);
     const [mascotasDescription, setMascotastDescription] = useState('Encontre esta mascota aqui esta la direccion donde fue vista');
     
     const addMascotas = () => {
-        if(imagesSelected.length === 0){
+
+        if(imageSnap.length === 0){
            ToastAndroid.show('seleccione almenos una imagen', ToastAndroid.SHORT);
         }else if(!LocationMascotas){
             ToastAndroid.show('tienes que poner la ubicacion', ToastAndroid.SHORT);
@@ -31,17 +35,20 @@ export default function addMascotasForm(props){
         }else {
             setIsLoading(true);
             
-            uploadImagesStorage(imagesSelected).then(arrayImages => {
+            uploadImagesStorage(imageSnap).then(arrayImages => {
                 db.collection('mascotasEncontradas')
-                .add({
+                .add({     
+                    phone: mascotasPhone,
                     description: mascotasDescription,
                     location: LocationMascotas,
+                    estado : mascotasEstado,
                     images: arrayImages,
                     createAt: new Date(),
                     createBy: firebaseApp.auth().currentUser.uid
                 })
                 .then(() => {
                     setIsLoading(false);
+                    setIsRealoadMascota(true);
                     navigation.navigate('Search');
                 })
                 .catch(() => {
@@ -72,14 +79,19 @@ export default function addMascotasForm(props){
     }
     return (
         <ScrollView>
-           <ImageMascotas imageMascotas={imagesSelected[0]}/>
+           <ImageMascotas imageMascotas={imageSnap[0]}/>
            <FormAdd
-                
+           setMascotasPhone={setMascotasPhone}    
            setIsVisibleMap={setIsVisibleMap}
            LocationMascotas={LocationMascotas}/>
            
-           <UploadImagen imagesSelected={imagesSelected} setImagesSelected={setImagesSelected} style={styles.imagenStyle}/>
-
+           <UploadImagen navigation={navigation} imageSnap={imageSnap} setImageSnap={setImageSnap} style={styles.imagenStyle}/>
+           
+           <TextInput 
+           keyboardType='numeric'
+           placeholder='Telefono de contacto'
+           style={styles.input}
+           onChange={e => setMascotasPhone(e.nativeEvent.text)}/>
            <Button
            title='notificar mascota'
            onPress={addMascotas}
@@ -89,6 +101,7 @@ export default function addMascotasForm(props){
            setIsVisibleMap={setIsVisibleMap}
            setLocationMascotas={setLocationMascotas}/>
         </ScrollView>
+       
     );
 }
 
@@ -113,35 +126,11 @@ function ImageMascotas(props){
 }
 
 function UploadImagen(props){
-    const {imagesSelected, setImagesSelected} = props;
+    const {navigation, imageSnap,setImageSnap} = props;
 
-    const imageSelect = async () => {
-        const resultPermission = await Permissions.askAsync(
-            Permissions.CAMERA_ROLL
-        );
-
-        const resultPermissionCamera = resultPermission.permissions.cameraRoll.status;
-
-        if(resultPermissionCamera === 'denied'){
-            ToastAndroid.show('es necesario dar permisos', ToastAndroid.SHORT);
-      }else{
-        const result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [4, 3]
-        });
-
-        if (result.cancelled){
-            ToastAndroid.show('has cerrado la galeria sin seleccionar ninguna imagen', ToastAndroid.SHORT);
-        }else{
-            setImagesSelected([...imagesSelected, result.uri]);
-        }
-
-      }
-         
-    };
-    
+        
     const removeImage = image => {
-        const arrayImages = imagesSelected;
+        const arrayImages = imageSnap;
 
         Alert.alert(
             'Eliminar Imagen',
@@ -153,7 +142,7 @@ function UploadImagen(props){
                 },
                 {
                     text: 'eliminar',
-                    onPress: () => setImagesSelected(arrayImages.filter(imageUrl => imageUrl !== image))
+                    onPress: () => setImageSnap(arrayImages.filter(imageUrl => imageUrl !== image))
                 }
             ],
             {cancelable: false}
@@ -164,19 +153,19 @@ function UploadImagen(props){
     return(
        <View >
            <View style={styles.viewImages}>
-           {imagesSelected.length < 4 && (
+           {imageSnap.length < 5 && (
                <Icon
                type='material-community'
                name='camera'
                color='#FFFCFC'
                containerStyle={styles.containerIcon}
-               onPress={imageSelect}
+               onPress={() => navigation.navigate('Camara',{imageSnap,setImageSnap})}
              />
-           )}
+             )}
            </View>
            
            <View style={styles.viewImages}>
-           {imagesSelected.map(imageMascotas => (
+           {imageSnap.map(imageMascotas => (
                <Avatar
                key={imageMascotas}
                onPress={() => removeImage(imageMascotas)}
@@ -185,7 +174,7 @@ function UploadImagen(props){
                />
                
 
-           ) )}
+           ))}
            </View>
            
            
@@ -197,6 +186,7 @@ function UploadImagen(props){
 function FormAdd(props){
 
     const {
+        
         setIsVisibleMap,
         LocationMascotas
     } = props
@@ -207,11 +197,10 @@ function FormAdd(props){
         <Icon 
             name='google-maps'
             type='material-community'
-            color= {LocationMascotas ? '#00a680' : '#FFFCFC'}
+            color= {LocationMascotas ? '#FF8E00' : '#FFFCFC'}
             onPress={() => setIsVisibleMap(true)}
         />
         </View>
-        
         <Text style={styles.textS}>Seleccione Imagen</Text>         
         </View>
     )
@@ -259,7 +248,7 @@ const confirmLocation = () => {
 return(
    
     <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
-       <View>
+       <View >
             {location && (
                 <MapView style={styles.mapStyle}
                 initialRegion={location}
@@ -306,7 +295,9 @@ const styles = StyleSheet.create({
        flexDirection: 'row',
        marginLeft: 20,
        marginRight: 20,
-       marginTop: 30
+       marginTop: 30,
+       
+       
    }, 
    containerIcon: {
        alignItems: 'center',
@@ -314,7 +305,7 @@ const styles = StyleSheet.create({
        marginRight: 10,
        height: 70,
        width: '100%',
-       backgroundColor: '#C4C4C4'
+       backgroundColor: '#FFBF6F'
    },
    miniatureStyle: {
        width: 70,
@@ -335,7 +326,8 @@ const styles = StyleSheet.create({
    },
    mapStyle: {
        width: '100%',
-       height: '90%'
+       height: '90%',
+       
    },
    viewMapBtn: {
        flexDirection: 'row',
@@ -356,7 +348,7 @@ const styles = StyleSheet.create({
 
    },
    btnAddMascotas: {
-    backgroundColor: '#00a680',
+    backgroundColor: '#FF8E00',
     margin: 20
    },
    textS: {
@@ -369,11 +361,19 @@ const styles = StyleSheet.create({
      width: '95%',
      height: 60,
      justifyContent: 'center',
+     backgroundColor: '#FFBF6F'
      
 
    },
    imagenStyle:{
        backgroundColor: 'red'
+   }, 
+   input: {
+       borderBottomWidth: 1.5,
+       width: '90%',
+       height: 50,
+       alignSelf: 'center',
+       fontSize: 18
    }
    
 });

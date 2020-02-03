@@ -16,7 +16,7 @@ import {withNavigation} from 'react-navigation';
     const login = async () => {
         setIsVisibleLoading(true);
 
-        await Facebook.initializeAsync('374616303402537');
+        await Facebook.initializeAsync('154576299290812');
        const {type, token}= await Facebook.logInWithReadPermissionsAsync(
           FacebookApi.application_id,
           {permissions: FacebookApi.permissions}
