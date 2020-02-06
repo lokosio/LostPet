@@ -4,4 +4,3 @@ import { firebaseApp} from './app/Utils/FireBase';
 export default function App() {
   return <Navigation/>
 }
-

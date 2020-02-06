@@ -45,7 +45,7 @@ export default function ListMascotas(props){
 
 function Pets(props){
     const {pet,navigation} = props;
-    const {description,images} = pet.item.pet;
+    const {description,images, fecha} = pet.item.pet;
     const [imageMascota, setImageMascota] = useState(null);
     
     useEffect(() => {
@@ -71,9 +71,11 @@ function Pets(props){
                   />
               </View>
               <View>
-              <Text style={styles.mascotaDescription}>
+                  
+                  <Text style={styles.mascotaDescription}>
                     {description.substr(0, 60)}...
-                </Text>
+                  </Text>
+                  <Text>{fecha}</Text>
               </View>
             </View>
 

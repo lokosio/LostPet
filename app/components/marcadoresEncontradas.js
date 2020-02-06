@@ -32,7 +32,7 @@ export default function Map(props){
           
 >
   
-{mascotas.map(marker => <Pets marker={marker}  navigation={navigation}/>)}
+{mascotas.map((marker, index) => <Pets key={index} marker={marker}  navigation={navigation}/>)}
   
 </MapView>
 
@@ -66,7 +66,7 @@ function Pets(props){
     <View> 
     <Marker
          
-      pinColor='#f4511e'
+      pinColor='#02FBA4'
       coordinate={{latitude: marker.pet.location.latitude,
         longitude: marker.pet.location.longitude}}
     >

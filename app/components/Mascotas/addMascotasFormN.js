@@ -11,6 +11,7 @@ import {firebaseApp} from '../../Utils/FireBase'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import Camara from '../../components/Mascotas/camara'
+import {DateCurrent} from '../../Utils/Date'
 const db = firebase.firestore(firebaseApp);
 const widthScreen = Dimensions.get('window').width;
 
@@ -24,7 +25,7 @@ export default function addMascotasForm(props){
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [LocationMascotas,setLocationMascotas] = useState(null);
     const [mascotasDescription, setMascotastDescription] = useState('Encontre esta mascota aqui esta la direccion donde fue vista');
-    
+    const fecha = DateCurrent().date;
     const addMascotas = () => {
 
         if(imageSnap.length === 0){
@@ -43,6 +44,7 @@ export default function addMascotasForm(props){
                     location: LocationMascotas,
                     estado : mascotasEstado,
                     images: arrayImages,
+                    fecha, fecha,
                     createAt: new Date(),
                     createBy: firebaseApp.auth().currentUser.uid
                 })

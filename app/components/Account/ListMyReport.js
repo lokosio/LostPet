@@ -70,9 +70,7 @@ function Pets(props){
     return(
         
         <View>
-        
-        
-        <TouchableOpacity onPress={() => navigation.navigate('Delete',{pet}) } >
+          <TouchableOpacity onPress={() => navigation.navigate('Delete',{pet}) } >
             <View style={styles.viewMascota}>
               <View style={styles.viewMascotaImage}>
                   <Image

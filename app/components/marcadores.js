@@ -15,7 +15,7 @@ export default function Map(props){
     const [imageMascota, setImageMascota] = useState([]);
     const [images, setImages] = useState(null);
     const arrayUrls = [];
-
+    
     return(
       <View>
    
@@ -33,7 +33,7 @@ export default function Map(props){
           
 >
   
-{mascotas.map(marker => <Pets marker={marker}  navigation={navigation}/>)}
+{mascotas.map((marker, index)=> <Pets key={index} marker={marker} clave={marker.pet.id}  navigation={navigation}/>)}
   
 </MapView>
 
@@ -44,13 +44,13 @@ export default function Map(props){
 }
 
 function Pets(props){
-  const {marker,navigation} = props;
-  //console.log('aqui5---'+ marker.pet.images+'----aqui')
+  const {marker,navigation, clave} = props;
+
  const {images,name,description} = marker.pet;
   const [imageMascota, setImageMascota] = useState(null);
   
   useEffect(() => {
-      console.log('aqui---'+ images+'----aqui')
+      
       const image = images[0];
      
       firebase.storage()
@@ -59,7 +59,7 @@ function Pets(props){
       .then(result => {
           setImageMascota(result);
           
-          console.log('aqui6---'+ result+'----aqui')
+       
       });
   });
   
@@ -67,8 +67,8 @@ function Pets(props){
   return(
     <View> 
     <Marker
-         
-      pinColor='#f4511e'
+      key={clave}
+      pinColor='#00a680'
       coordinate={{latitude: marker.pet.location.latitude,
         longitude: marker.pet.location.longitude}}
     >

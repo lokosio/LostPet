@@ -37,6 +37,7 @@ function RegistroForm(props){
                 .createUserWithEmailAndPassword(email, password)
                 .then(() => {
                     navigation.navigate('MyAccount');
+                    ToastAndroid.show('Bienvenido a LostPet', ToastAndroid.SHORT);
                 })
                 .catch(() => {
                     ToastAndroid.show('error al crear la cuenta', ToastAndroid.SHORT);

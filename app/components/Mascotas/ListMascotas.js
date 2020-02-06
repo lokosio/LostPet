@@ -49,7 +49,7 @@ export default function ListMascotas(props){
 
 function Pets(props){
     const {pet, navigation} = props;
-    const {name, address, description, images} = pet.item.pet;
+    const {name, address, description, images,fecha} = pet.item.pet;
     const [imageMascota, setImageMascota] = useState(null);
     
     
@@ -81,6 +81,7 @@ function Pets(props){
                 <Text style={styles.mascotaDescription}>
                     {description.substr(0, 60)}...
                 </Text>
+                <Text style={styles.mascotaAddress}>{fecha}</Text>
               </View>
             </View>
 
@@ -117,7 +118,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         margin:  10,
         backgroundColor: '#fff',
-        
         borderRadius: 50,
     },
     viewMascotaImage: {

@@ -5,23 +5,24 @@ import * as firebase from 'firebase';
 import InfoUser from '../../components/Account/InfoUser'
 import AccountOptions from '../../components/Account/AccountOptions'
 import {withNavigation, NavigationEvents} from 'react-navigation';
-
+import Loading from '../../components/Loading'
  function UserLogged(props){
     const{navigation} = props;
     const [userInfo, setUserInfo] = useState({});
-
+    const [reloadData, setReloadData] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [textLoading, setTextLoading] = useState('')
     useEffect(() => {
         (async () => {
             const user = await firebase.auth().currentUser;
             setUserInfo(user.providerData[0])
-            
         })();
-    },[]);
+        setReloadData(false)
+    },[reloadData]);
 
-    return(
-        
+    return(    
             <View style={styles.viewUserInfo}>
-                <InfoUser userInfo={userInfo}/>
+                <InfoUser userInfo={userInfo} setReloadData={setReloadData} setIsLoading={setIsLoading} setTextLoading={setTextLoading}/>
             <AccountOptions navigation={navigation}/>
             <Button 
             title='cerrar sesion'
@@ -29,7 +30,7 @@ import {withNavigation, NavigationEvents} from 'react-navigation';
              buttonStyle={styles.btnCloseSession}
              titleStyle={styles.btnCloseSessionText}/>
 
-            
+            <Loading text={textLoading} isVisible={isLoading}/>
             </View>
 
         

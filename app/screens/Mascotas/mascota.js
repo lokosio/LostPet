@@ -4,6 +4,7 @@ import {Icon, ListItem,Button} from 'react-native-elements'
 import Carousel from '../../components/carousel'
 import * as firebase from 'firebase';
 import Map from '../../components/Map'
+import {makeCall} from '../../Utils/Calls'
 const screenWidth = Dimensions.get('window').width;
 
 export default function Mascota(props){
@@ -38,6 +39,7 @@ export default function Mascota(props){
             <TitleMascota 
                name={pet.name}
                description={pet.description}
+               fecha={pet.fecha}
             />
             <MascotaInfo
                location={pet.location}
@@ -45,6 +47,7 @@ export default function Mascota(props){
                address={pet.address}
                phone={pet.phone}
                recompensa={pet.recompensa}
+               fecha={pet.fecha}
             />
       
         </ScrollView>
@@ -62,6 +65,7 @@ function TitleMascota(props){
         <View style={styles.viewMascotaTitle}>
            <View style={styles.viewName}>
               <Text style={styles.nameMascota}>{name}</Text>
+              
            </View>
            <Text style={styles.descriptionMascota}>{description}</Text>
         </View>
@@ -70,7 +74,7 @@ function TitleMascota(props){
 }
 
 function MascotaInfo(props){
-    const {location, name , address, phone, recompensa } = props;
+    const {location, name , address, phone, recompensa,fecha } = props;
 
     const listInfo = [
         {
@@ -83,11 +87,18 @@ function MascotaInfo(props){
             text: phone,
             iconName: 'phone',
             iconType: 'material-community',
-            action: null
+            action: null,
+            onPress: () => {makeCall(phone) }
         },
         {
             text: recompensa,
             iconName: 'currency-usd',
+            iconType: 'material-community',
+            action: null
+        },
+        {
+            text: fecha,
+            iconName: 'calendar',
             iconType: 'material-community',
             action: null
         }
@@ -109,6 +120,7 @@ function MascotaInfo(props){
                        type: item.iconType,
                        color: '#00a680'
                    }}
+                   onPress={item.onPress}
                    containerStyle={styles.containerListItem}
                 />
            ))}

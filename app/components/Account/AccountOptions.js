@@ -1,15 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, Text, Alert} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {firebaseApp} from '../../Utils/FireBase'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-
+import Modal from '../Modal'
+import ChangeDisplayNameForm from './ChangeDisplayNameForm'
+import ChangeEmailForm from './ChangeEmailForm'
+import ChangePassword from './ChangePasswaordForm'
 export default function AccountOptions(props){
     
     
     const {navigation} = props;
-    
+    const [isVisibleModal, setIsvisibleModal] = useState(false)
+    const [renderComponent, setRenderComponent] = useState(null)
     const menuOptions = [{
         title: 'cambiar Nombre y Apellidos',
         iconType: 'material-community',
@@ -17,7 +21,7 @@ export default function AccountOptions(props){
         iconColorLeft: '#FC8600',
         iconNameRight: 'chevron-right',
         iconColorRight: '#00a680',
-        onPress: () => console.log('change displayName')
+        onPress: () => selectedComponent('displayName')
     },
     {
         title: 'cambiar Email',
@@ -26,7 +30,7 @@ export default function AccountOptions(props){
         iconColorLeft: '#FC8600',
         iconNameRight: 'chevron-right',
         iconColorRight: '#00a680',
-        onPress: () => console.log('change Email')
+        onPress: () => selectedComponent('email')
     },
     {
         title: 'cambiar contraseña',
@@ -35,7 +39,7 @@ export default function AccountOptions(props){
         iconColorLeft: '#FC8600',
         iconNameRight: 'chevron-right',
         iconColorRight: '#00a680',
-        onPress: () => console.log('change contraseña')
+        onPress: () => selectedComponent('password')
     },
     
     {
@@ -48,6 +52,25 @@ export default function AccountOptions(props){
         onPress: () => navigation.navigate('MisReportess')  
     }
 ];
+
+const selectedComponent = (key) =>{
+    switch(key){
+        case 'displayName': 
+        setRenderComponent(<ChangeDisplayNameForm/>)
+        setIsvisibleModal(true)
+          break;
+        case 'email': 
+        setRenderComponent(<ChangeEmailForm/>)
+        setIsvisibleModal(true)
+        break;
+        case 'password':
+        setRenderComponent(<ChangePassword/>)
+        setIsvisibleModal(true)
+        break;
+        default: 
+          break;
+    }
+}
     return(
         <View>
             {menuOptions.map((menu, index) => (
@@ -68,6 +91,13 @@ export default function AccountOptions(props){
                   containerStyle={styles.menuItem}
                 />
     ))}
+    {renderComponent && (
+        <Modal isVisible={isVisibleModal} setIsVisible={setIsvisibleModal}>
+        {renderComponent}
+    </Modal>
+
+    )}
+    
         </View>
     )
 }

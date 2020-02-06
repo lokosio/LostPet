@@ -25,7 +25,11 @@ import Loading from '../../components/Loading'
                 await firebase
                 .auth()
                 .signInWithEmailAndPassword(email, password)
-                .then(() => {navigation.navigate('MyAccount');}
+                .then(() => {navigation.navigate('MyAccount');
+                ToastAndroid.show('Bienvenido a LostPet', ToastAndroid.SHORT);
+                }
+                
+            
                 )
                 .catch(() => {
                     ToastAndroid.show('error al logear', ToastAndroid.SHORT);

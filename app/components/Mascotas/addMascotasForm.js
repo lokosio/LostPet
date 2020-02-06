@@ -10,7 +10,7 @@ import uuid from 'uuid/v4';
 import {firebaseApp} from '../../Utils/FireBase'
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-
+import {DateCurrent} from '../../Utils/Date'
 const db = firebase.firestore(firebaseApp);
 const widthScreen = Dimensions.get('window').width;
 
@@ -26,6 +26,7 @@ export default function addMascotasForm(props){
     const [mascotasEstado, setMascotasEstado] = useState(true);
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [LocationMascotas,setLocationMascotas] = useState(null);
+    const fecha = DateCurrent().date;
     
     
     const addMascotas = () => {
@@ -49,6 +50,7 @@ export default function addMascotasForm(props){
                     estado : mascotasEstado,
                     location: LocationMascotas,
                     images: arrayImages,
+                    fecha: fecha,
                     createAt: new Date(),
                     createBy: firebaseApp.auth().currentUser.uid
                 })
@@ -56,6 +58,7 @@ export default function addMascotasForm(props){
                     setIsLoading(false);
                     setIsRealoadMascota(true);
                     navigation.navigate('Mascotas');
+                    ToastAndroid.show('Reporte subido correctamente', ToastAndroid.SHORT);
                 })
                 .catch(() => {
                     setIsLoading(false);

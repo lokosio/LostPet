@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet,ScrollView ,View, Text, Dimensions} from 'react-native';
 import {Icon, ListItem,Button} from 'react-native-elements'
+import Clipboard from "@react-native-community/clipboard";
 import Carousel from '../../components/carousel'
 import * as firebase from 'firebase';
 import Map from '../../components/Map'
+import {makeCall} from '../../Utils/Calls'
 const screenWidth = Dimensions.get('window').width;
 
 export default function Mascota(props){
@@ -11,9 +13,6 @@ export default function Mascota(props){
     const {pet} = navigation.state.params.pet.item;
     const [imageMascota, setImageMascota] = useState([]);
     
-
-    
-
     useEffect(() => {
         const arrayUrls = [];
         (async () => {
@@ -40,6 +39,7 @@ export default function Mascota(props){
             <MascotaInfo
                location={pet.location}
                phone={pet.phone}
+               fecha={pet.fecha}
             />
       
         </ScrollView>
@@ -49,23 +49,29 @@ export default function Mascota(props){
     )
 }
 
-
 function MascotaInfo(props){
-    const {location,phone } = props;
+    const {location,phone,fecha } = props;
     const listInfo = [
-        
         {
             text: phone,
             iconName: 'phone',
             iconType: 'material-community',
-            action: null
+            action: null,
+            onPress: () => {makeCall(phone) }
+        },
+        {
+            text: fecha,
+            iconName: 'calendar',
+            iconType: 'material-community',
+            action: null,
+            onPress: () => {makeCall(phone) }
         }
-        
+       
     ]
 
     return(
         <View style={styles.viewPetInfo}>
-            <Text style={styles.petInfoTitle}>Informacion sobre la mascota</Text>
+            <Text style={styles.petInfoTitle}  >Informacion sobre la mascota</Text>
             <Map location={location}  height={100}/>
             
            {listInfo.map((item, index) => (
@@ -78,6 +84,7 @@ function MascotaInfo(props){
                        type: item.iconType,
                        color: '#00a680'
                    }}
+                   onPress={item.onPress}
                    containerStyle={styles.containerListItem}
                 />
            ))}

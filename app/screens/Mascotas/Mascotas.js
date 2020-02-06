@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet,button, Button,ImageBackground,ScrollView,RefreshControl,Dimensions} from 'react-native';
+import {Text, View, StyleSheet,button, Button,ImageBackground,ScrollView,RefreshControl,Dimensions,Image} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionButton from 'react-native-action-button';
 import { firebaseApp } from '../../Utils/FireBase';
@@ -10,6 +10,7 @@ import ListMascotas from '../../components/Mascotas/ListMascotas'
 import Funciones from '../funciones'
 const db = firebase.firestore(firebaseApp);
 const screenWidth = Dimensions.get('window').height;
+
 
 export default function Mascotas(props){
 
@@ -55,16 +56,13 @@ export default function Mascotas(props){
                    setMascotas(resultMascotas);
                })
            })();
-           console.log('1--'+isReloadMascota+'--1')
            setIsRealoadMascota(false);
            setIsLoading(false)
-           console.log('2--'+isReloadMascota+'--2')
-          
+                     
     }, [isReloadMascota]);
 
     const handleLoadMore = async () => {
         const resultMascotas = [];
-        console.log('6--'+mascotas.length+'--6'+ totalMascotas)
         mascotas.length < totalMascotas && setIsLoading(true);
 
         const mascotasDB = db
@@ -121,7 +119,7 @@ export default function Mascotas(props){
 function AcctionButton(props){
     const {navigation, setIsRealoadMascota,setIsLoading, mascotas} = props;
     return (
-        <ActionButton buttonColor="rgba(231,76,60,1)">
+        <ActionButton buttonColor="#FF7C00">
         <ActionButton.Item
           buttonColor="#9b59b6"
           title="Reportar mi mascota perdida"
@@ -158,3 +156,5 @@ const styles = StyleSheet.create({
       color: 'white',
     },
   });
+
+  /*------------------------------------------------------------------------*/

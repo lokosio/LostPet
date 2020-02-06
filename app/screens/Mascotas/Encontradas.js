@@ -112,7 +112,7 @@ export default withNavigation(Mascotas);
 function AcctionButton(props){
     const {navigation, setIsRealoadMascota,mascotas} = props;
     return (
-        <ActionButton buttonColor="rgba(231,76,60,1)">
+        <ActionButton buttonColor="#FF7C00">
         <ActionButton.Item
           buttonColor="#9b59b6"
           title="Notificar Mascota Encontrada"
